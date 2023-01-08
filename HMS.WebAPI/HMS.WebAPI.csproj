@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\AppointmentsController.cs" />
+    <Compile Remove="Controllers\MedicinesController.cs" />
+    <Compile Remove="Controllers\NursesController.cs" />
+    <Compile Remove="Controllers\PatientsController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.17">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HMS.BLL\HMS.BLL.csproj" />
+    <ProjectReference Include="..\HMS.DAL\HMS.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

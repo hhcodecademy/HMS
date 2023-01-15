@@ -15,7 +15,8 @@ namespace HMS.BLL.Mapping
         {
             CreateMap<Hospital, HospitalDto>().ReverseMap();
             CreateMap<Doctor, DoctorDto>().ReverseMap();
-
+            CreateMap<Appointment, AppointmentDto>().ReverseMap();
+            CreateMap<LocalUser, LocalUserDto>().ReverseMap();
         }
 
     }

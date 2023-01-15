@@ -1,7 +1,6 @@
 ﻿using HMS.BLL.Services.Interface;
 using HMS.DAL.DBModel;
 using HMS.DAL.Dtos;
-using HMS.DAL.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,24 +12,24 @@ namespace HMS.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AppointmentsController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly IAppointmentService _service;
+        private readonly IUserService _service;
 
-        public AppointmentsController(IAppointmentService service)
+        public UsersController(IUserService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AppointmentDto>>> GetList()
+        public async Task<ActionResult<List<LocalUserDto>>> GetList()
         {
             var response = await _service.GetListAsync();
             return response;
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<AppointmentDto>> GetByIdAsync(int id)
+        public async Task<ActionResult<LocalUserDto>> GetByIdAsync(int id)
 
         {
             if (id == 0)
@@ -48,15 +47,21 @@ namespace HMS.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AppointmentDto>> Create(AppointmentDto itemDto)
+        public async Task<ActionResult<LocalUserDto>> Create(LocalUserDto itemDto)
         {
 
             var response = await _service.AddAsync(itemDto);
             return Ok(response);
         }
 
+        [HttpPost("login")]
+        public ActionResult<LocalUserDto> Login(SignInRequestDto SignInRequestDto)
+        {
+            var response = _service.Login(SignInRequestDto);
+            return Ok(response);
+        }
         [HttpPut("{id:int}")]
-        public ActionResult<Appointment> Update(int id, [FromBody] AppointmentDto obj)
+        public ActionResult<LocalUser> Update(int id, [FromBody] LocalUserDto obj)
         {
             if (id == 0 || id != obj.Id)
             {

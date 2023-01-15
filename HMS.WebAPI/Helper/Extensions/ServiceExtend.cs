@@ -18,6 +18,8 @@ namespace HMS.WebAPI.Helper.Extensions
             }
             services.AddScoped<IHospitalService, HospitalService>();
             services.AddScoped<IDoctorService, DoctorService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IUserService, UserService>();
             return services;
 
         }

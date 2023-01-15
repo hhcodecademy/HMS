@@ -57,6 +57,7 @@ namespace HMS.BLL.Services
         public DoctorDto Update(DoctorDto item)
         {
             Doctor mapperItem = _mapper.Map<Doctor>(item);
+        
             Doctor dbItem = _repository.Update(mapperItem);
             var response = _mapper.Map<DoctorDto>(dbItem);
             return response;

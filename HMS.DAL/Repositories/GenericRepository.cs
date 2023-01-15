@@ -12,7 +12,7 @@ namespace HMS.DAL.Repositories
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly AppDbContext _dbContext;
-        private readonly DbSet<TEntity> _entities;
+        protected readonly DbSet<TEntity> _entities;
         public GenericRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;

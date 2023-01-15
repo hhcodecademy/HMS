@@ -19,7 +19,8 @@ namespace HMS.BLL.Validations
             RuleFor(d => d.Email).NotNull().WithMessage("Xahiş edirem  {PropertyName} alanı daxil ediniz")
                   .NotEmpty().WithMessage("Xahiş edirem  {PropertyName} alanı daxil ediniz"); ;
             RuleFor(d => d.Username).NotNull().WithMessage("Xahiş edirem  {PropertyName} alanı daxil ediniz")
-                  .NotEmpty().WithMessage("Xahiş edirem  {PropertyName} alanı daxil ediniz"); ;
+                  .NotEmpty().WithMessage("Xahiş edirem  {PropertyName} alanı daxil ediniz");
+            RuleFor(d => d.Email).EmailAddress().WithMessage("Xahiş edirem  {PropertyName} alanın düzgün dəyər daxil ediniz"); ;
         }
     }
 }

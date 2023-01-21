@@ -2,6 +2,7 @@
 using HMS.DAL.DBModel;
 using HMS.DAL.Dtos;
 using HMS.DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,6 +24,7 @@ namespace HMS.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<List<HospitalDto>>> GetList()
         {
             var response = await _hospitalService.GetListAsync();

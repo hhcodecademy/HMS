@@ -50,24 +50,29 @@ namespace HMS.WebAPI
             services.AddRepositories();
             services.AddServices();
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(o =>
-            {
-                o.TokenValidationParameters = new TokenValidationParameters
-                {
-         
-                    IssuerSigningKey = new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes(Configuration.GetValue<string>("SecretInfo:SecretKey"))),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = false,
-                    ValidateIssuerSigningKey = true
-                };
-            });
+            string key = Configuration.GetValue<string>("SecretInfo:SecretKey");
+
+                 services.AddAuthentication(conf =>
+                 {
+                     conf.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                     conf.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                 }).AddJwtBearer(x =>
+                 {
+
+                     x.RequireHttpsMetadata = false;
+                     x.SaveToken = true;
+                     x.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuerSigningKey = true,
+                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                         ValidateIssuer = false,
+                         ValidateAudience = false,
+                         ValidateLifetime = true,
+                         LifetimeValidator = TokenLifetimeValidator.Validate,
+
+                     };
+
+                 });
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<DoctorValidator>()); ;
             services.AddSwaggerGen(c =>
@@ -96,6 +101,18 @@ namespace HMS.WebAPI
             {
                 endpoints.MapControllers();
             });
+        }
+        public static class TokenLifetimeValidator
+        {
+            public static bool Validate(
+                DateTime? notBefore,
+                DateTime? expires,
+                SecurityToken tokenToValidate,
+                TokenValidationParameters @param
+            )
+            {
+                return (expires != null && expires > DateTime.UtcNow);
+            }
         }
     }
 }

@@ -24,7 +24,7 @@ namespace HMS.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "HRManager")]
         public async Task<ActionResult<List<DoctorDto>>> GetList()
         {
             var response = await _service.GetListAsync();

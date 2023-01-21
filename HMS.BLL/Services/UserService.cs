@@ -72,10 +72,10 @@ namespace HMS.BLL.Services
             return _userRepository.IsUnique(userName);
         }
 
-        public LocalUserResponseDto Login(SignInRequestDto requestDto)
+        public LocalUserResponseDto Login(SignInRequestDto loginRequestDto)
         {
             LocalUserResponseDto localUserResponseDto = null;
-            LocalUser localUser = _userRepository.Login(requestDto);
+            LocalUser localUser = _userRepository.Login(loginRequestDto);
             if (localUser == null)
             {
                 localUserResponseDto = new LocalUserResponseDto
@@ -85,37 +85,37 @@ namespace HMS.BLL.Services
                 };
                 return localUserResponseDto;
             }
-            var mapperItem = _mapper.Map<LocalUserDto>(localUser);
-
             var key = Encoding.ASCII.GetBytes
-        (_configuration.GetValue<string>("SecretInfo:SecretKey"));
+ (_configuration.GetValue<string>("SecretInfo:SecretKey"));
+            var mapperItem = _mapper.Map<LocalUserDto>(localUser);
+            // eger user tapsaq token generate edeceyik
+            var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-              {
-                  new Claim("Id", mapperItem.Id.ToString()),
-                 new Claim("Role", mapperItem.Role.ToString()),
+                Subject = new ClaimsIdentity(new Claim[] {
+                 new Claim(ClaimTypes.Name,localUser.Id.ToString()),
+                 new Claim(ClaimTypes.Role,localUser.Role.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(1),
+                SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 
-             }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
-
-                SigningCredentials = new SigningCredentials
-                     (new SymmetricSecurityKey(key),
-                     SecurityAlgorithms.HmacSha512Signature)
             };
-            var tokenHandler = new JwtSecurityTokenHandler();
+
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = tokenHandler.WriteToken(token);
-            var stringToken = tokenHandler.WriteToken(token);
-
-            LocalUserResponseDto responseDto = new LocalUserResponseDto()
+            LocalUserResponseDto loginResponseDto = new LocalUserResponseDto
             {
-                UserDto = mapperItem,
-                Token = stringToken
+                Token = tokenHandler.WriteToken(token),
+                UserDto = new LocalUserDto
+                {
+                    Id = localUser.Id,
+                    Email = localUser.Email,
 
+                    Password = localUser.Password
+                }
             };
-
-            return responseDto;
+            return loginResponseDto;
         }
+
+       
     }
 }
